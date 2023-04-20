@@ -209,6 +209,61 @@ public class ReviewsDao {
 	    return reviews;
 	}
 	
+	public List<Reviews> getUsefulReviewsByBusinessName(String businessName) throws SQLException {
+	    List<Reviews> reviews = new ArrayList<>();
+	    String selectReviews =
+	        "SELECT * " +
+	        "FROM Reviews Inner Join Business " +
+	        "ON Reviews.businessId = Business.businessId " +
+	        "Where Business.BusinessName = ? Order by UsefulCount DESC Limit 5;";
+	    Connection connection = null;
+	    PreparedStatement selectStmt = null;
+	    ResultSet results = null;
+	    try {
+	        connection = connectionManager.getConnection();
+	        selectStmt = connection.prepareStatement(selectReviews);
+	        selectStmt.setString(1, businessName);
+	        results = selectStmt.executeQuery();
+	        
+	        UsersDao usersDao = UsersDao.getInstance();
+			BusinessesDao businessesDao = BusinessesDao.getInstance();
+			
+	        while(results.next()) {
+	            String reviewId = results.getString("ReviewId");
+	            String resultUserId = results.getString("UserId");
+				String resultBusinessId = results.getString("BusinessId");
+	            double starts = results.getDouble("Stars");
+	            int usefulCount = results.getInt("UsefulCount");
+	            int funnyCount = results.getInt("FunnyCount");
+	            int coolCount = results.getInt("CoolCount");
+	            String content = results.getString("ReviewContent");
+	            Date resultReviewDate =  new Date(results.getTimestamp("ReviewDate").getTime());
+				
+				Users user = usersDao.getUserByUserId(resultUserId);
+				Businesses business = businessesDao.getBusinessById(resultBusinessId);
+				
+	            
+	            Reviews review = new Reviews(reviewId,starts,usefulCount,funnyCount,coolCount,content,
+						resultReviewDate,business,user);
+	            reviews.add(review);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        throw e;
+	    } finally {
+	        if(connection != null) {
+	            connection.close();
+	        }
+	        if(selectStmt != null) {
+	            selectStmt.close();
+	        }
+	        if(results != null) {
+	            results.close();
+	        }
+	    }
+	    return reviews;
+	}
+	
 	public Reviews delete(Reviews review) throws SQLException {
 		String deleteReview = "DELETE FROM Reviews WHERE ReviewId=?;";
 		Connection connection = null;

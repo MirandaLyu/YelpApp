@@ -18,16 +18,28 @@
 			<input id="businessName" name="businessName" value="${fn:escapeXml(param.businessName)}">
 		</p>
 		<p>
-			<input type="submit">
+			<input type="submit">	
 			<br/><br/><br/>
 			<span id="successMessage"><b>${messages.success}</b></span>
 		</p>
 	</form>
+	
+	<form action="findtopreviews" method="post">
+  		<p>
+			<button type="submit">Get Most Useful Reviews</button>
+			<input id="businessName" name="businessName" value="${fn:escapeXml(param.businessName)}">
+		</p>
+		<p>
+			<br/><br/><br/>
+			<span id="successMessage"><b>${messages.success}</b></span>
+		</p>
+	</form>
+	
 	<br/>
 	<div id="reviewCreate"><a href="reviewcreate">Create Review</a></div>
 	<br/>
 	<h1>Matching Reviews</h1>
-        <table border="1">
+        <table id="reviewTable" border="1">
             <tr>
                 <th>ReviewId</th>
 				<th>Stars</th>

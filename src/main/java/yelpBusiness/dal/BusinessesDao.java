@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import yelpBusiness.model.BusinessOwners;
 import yelpBusiness.model.Businesses;
@@ -62,6 +64,60 @@ public class BusinessesDao {
 				insertStml.close();
 			}
 		}
+	}
+	
+	public List<Businesses> getMostReviewedBusiness() throws SQLException {
+	    List<Businesses> businesses = new ArrayList<>();
+	    String selectBusiness =
+	        "SELECT * " +
+	        "FROM Business " +
+	        "Order by ReviewCount DESC Limit 5;";
+	    Connection connection = null;
+	    PreparedStatement selectStmt = null;
+	    ResultSet results = null;
+	    try {
+	    	connection = connectionManager.getConnection();
+			selectStmt = connection.prepareStatement(selectBusiness);
+			results = selectStmt.executeQuery();
+	        
+			BusinessOwnersDao businessOnwersDao = BusinessOwnersDao.getInstance();
+			
+	        while(results.next()) {
+	        	String resultBusinessId = results.getString("BusinessId");
+				String resultUserId = results.getString("UserId");
+				String resultBusinessName = results.getString("BusinessName");
+				String resultAddress = results.getString("Address");
+				String resultCity = results.getString("City");
+				String resultState = results.getString("State");
+				String resultPostalCode = results.getString("PostalCode");
+				double resultLatitude = results.getDouble("Latitude");
+				double resultLongtitude = results.getDouble("Longtitude");
+				int resultReviewCount = results.getInt("ReviewCount");
+				String resultCategories = results.getString("Categories");
+				boolean resultIsOpen = results.getBoolean("IsOpen");
+				
+				BusinessOwners businessOwner = businessOnwersDao.getBusinessOwnerById(resultUserId);
+				
+				Businesses business = new Businesses(resultBusinessId,resultBusinessName,resultAddress,
+						resultCity,resultState,resultPostalCode,resultCategories,resultLatitude,resultLongtitude,
+						resultReviewCount,resultIsOpen,businessOwner);
+				businesses.add(business);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        throw e;
+	    } finally {
+	        if(connection != null) {
+	            connection.close();
+	        }
+	        if(selectStmt != null) {
+	            selectStmt.close();
+	        }
+	        if(results != null) {
+	            results.close();
+	        }
+	    }
+	    return businesses;
 	}
 	
 	public Businesses getBusinessById(String businessId) throws SQLException {
