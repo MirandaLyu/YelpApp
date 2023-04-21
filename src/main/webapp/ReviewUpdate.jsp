@@ -17,10 +17,6 @@
 			<label for="reviewid">Review Id</label>
 			<input id="reviewid" name="reviewid" value="${fn:escapeXml(param.reviewid)}">
 		</p>
-<%-- 		<p>
-			<label for="oldcontent">Old Content</label>
-			<input id="oldcontent" name="oldcontent" value="${fn:escapeXml(param.oldcontent)}">
-		</p> --%>
 		<p>
 			<label for="newcontent">New Content</label>
 			<input id="newcontent" name="newcontent" value="">

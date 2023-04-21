@@ -12,7 +12,7 @@
 </head>
 <body>
 	<form action="findreviews" method="post">
-		<h1>Search for reviews by businessName</h1>
+		<h1>Search for reviews by businessName</h1><div id="findBusinesses"><a href="findbusinesses">(Display Hot Businesses)</a></div>
 		<p>
 			<label for="businessName">BusinessName</label>
 			<input id="businessName" name="businessName" value="${fn:escapeXml(param.businessName)}">
@@ -20,7 +20,7 @@
 		<p>
 			<input type="submit">	
 			<br/><br/><br/>
-			<span id="successMessage"><b>${messages.success}</b></span>
+<%-- 			<span id="successMessage"><b>${messages.success}</b></span> --%>
 		</p>
 	</form>
 	
